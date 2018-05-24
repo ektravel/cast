@@ -1,6 +1,6 @@
 //Dependencies
 var express = require("express");
-var mysql = requrie("mysql");
+var mysql = require("mysql");
 
 //Instance of express app
 var app = express();
@@ -23,11 +23,8 @@ connection.connect(function(err){
         console.log("error connecting: " + err.stack);
         return;
     }
-    console.log("connected as id " + connection. threadId);
+    console.log("connected as id " + connection.threadId);
 });
-
-// Create a /attitude-chart/:att route that will display all the actors for a specific type of attitude.
-
 
 // Routes
 // a /cast route displays the characters and their data by id's
@@ -45,14 +42,13 @@ app.get("/cast", function(req, res) {
     }
 
     html += "</ul>";
-
     res.send(html);
   });
 });
 
 // a /coolness-chart route that will display all the actors and their data ordered by their coolness points.
 app.get("/coolness-chart", function(err, res){
-    connection.query("SELECT * FROM  friends_db order by coolness_points DES", function (err, result){
+    connection.query("SELECT * FROM  characters_table order by coolness_points DESC", function (err, result){
     var html = "<h1>Characters by Coolness</h1>";
     html += "<ul>";
     for (i = 0; i < result.length; i++){
@@ -68,14 +64,14 @@ app.get("/coolness-chart", function(err, res){
 
 // Create a /attitude-chart/:att route that will display all the actors for a specific type of attitude.
 app.get("/attitude-chart/:att", function(req, res){
-    connection.query("SELECT * FROM characters_table WHERE attitude = ?", [req.params.att], function(err, result){
-        var html = "<h1>Characters by Attitude" + req.params.att + "</h1>";
+    connection.query("SELECT * FROM characters_table WHERE attitudes = ?", [req.params.att], function(err, result){
+        var html = "<h1>Characters by Attitude of " + req.params.att + "</h1>";
         html += "<ul>";
         for (i = 0; i < result.length; i++){
             html += "<li><p> ID: " + result[i].id + "</p>";
               html += "<p> Name: " + result[i].name + "</p>";
               html += "<p> Coolness Points: " + result[i].coolness_points + "</p>";
-              html += "<p>Attitude: " + result[i].attitude + "</p></li>";
+              html += "<p>Attitude: " + result[i].attitudes + "</p></li>";
             }
             html += "<ul>";
             res.send(html);
